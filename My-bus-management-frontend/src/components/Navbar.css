@@ -33,15 +33,15 @@
 }
 
 .logo-img {
-  height: 38px;
-  width: auto;
+  height: 100%;
+  width: 100px;
   object-fit: contain;
 }
 
 .logo-text {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: #00105a;
 }
 
 /* ===== MENU ===== */

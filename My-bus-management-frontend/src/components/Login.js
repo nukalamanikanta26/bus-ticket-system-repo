@@ -90,11 +90,6 @@ const Login = () => {
         <p className="signup-link">
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
-
-        <div className="admin-info">
-          <p>Admin Login:</p>
-          <p>Email: admin@bus.com | Password: admin123</p>
-        </div>
       </div>
     </div>
   );
