@@ -87,16 +87,24 @@ public class BusService {
         Bus bus = busRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id: " + id));
         
+        // Calculate the difference in total seats BEFORE updating the entity,
+        // so that available seats can be adjusted correctly.
+        int oldTotalSeats = bus.getTotalSeats();
+        int newTotalSeats = busRequestDTO.getTotalSeats();
+        int seatsDifference = newTotalSeats - oldTotalSeats;
+
         bus.setSource(busRequestDTO.getSource());
         bus.setDestination(busRequestDTO.getDestination());
         bus.setJourneyDate(busRequestDTO.getJourneyDate());
         bus.setJourneyTime(busRequestDTO.getJourneyTime());
-        bus.setTotalSeats(busRequestDTO.getTotalSeats());
+        bus.setTotalSeats(newTotalSeats);
         bus.setFarePerSeat(busRequestDTO.getFarePerSeat());
         
-        // Recalculate available seats if total seats changed
-        int seatsDifference = busRequestDTO.getTotalSeats() - bus.getTotalSeats();
-        bus.setAvailableSeats(bus.getAvailableSeats() + seatsDifference);
+        // Recalculate available seats if total seats changed.
+        // This maintains existing bookings while updating remaining capacity.
+        if (seatsDifference != 0) {
+            bus.setAvailableSeats(bus.getAvailableSeats() + seatsDifference);
+        }
         
         Bus updatedBus = busRepository.save(bus);
         return convertToResponseDTO(updatedBus);
